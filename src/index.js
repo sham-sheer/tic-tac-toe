@@ -22,23 +22,21 @@ class Board extends React.Component {
   }
 
   render() {
+    let rows = [];
+    const rowWidth = Math.sqrt(this.props.squares.length);
+
+    for(let i = 0; i < rowWidth; i++) {
+      let rowCells = [];
+      for(let j = 0; j < rowWidth; j++) {
+        const cell = i * rowWidth + j;
+        rowCells.push(<span class="board-cell">{this.renderSquare(cell)}</span>);
+      }
+      rows.push(<div className="board-row">{rowCells}</div>);
+    }
+
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {rows}
       </div>
     );
   }
@@ -88,13 +86,17 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
     const moves = history.map((step, move) => {
     const location = step.currentLocation;
-    const desc = move ?
+    let desc = move ?
       'Go to move #' + move + ' , At: ' + location :
       'Go to game start';
-
+    if (move === this.state.stepNumber) {
+      desc = <b>{desc}</b>
+    }
     return (
       <li key={move}>
-        <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        <button onClick={() => this.jumpTo(move)}>
+          {desc}
+        </button>
       </li>
     );
   });
